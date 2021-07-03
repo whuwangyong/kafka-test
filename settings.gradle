@@ -1,0 +1,4 @@
+rootProject.name = 'kafka-test'
+include 'kafka-clients'
+include 'spring-kafka'
+
