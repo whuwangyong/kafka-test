@@ -1,15 +1,28 @@
-plugins {
-    id 'java'
+ext.versions = [
+        springBoot: '2.4.1'
+]
+
+apply plugin: 'java'
+
+allprojects {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+        maven { url 'http://127.0.0.1:8081/nexus/content/groups/public/' }
+    }
 }
 
-group 'cn.whu.wy'
-version '1.0-SNAPSHOT'
+subprojects {
+    apply plugin: 'java'
+    group 'cn.whu.wy'
+    version '1.0-SNAPSHOT'
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
 
-sourceCompatibility = 1.8
-
-repositories {
-    maven { url 'https://maven.aliyun.com/repository/public' }
-    mavenCentral()
+    dependencies {
+        compile 'org.projectlombok:lombok:1.18.8'
+        annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    }
 }
 
 dependencies {

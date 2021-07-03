@@ -1,34 +1,25 @@
-plugins {
-    id 'org.springframework.boot' version '2.4.1'
-    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-    id 'java'
-}
-
-
-group 'cn.whu.wy'
-version '1.0-SNAPSHOT'
-sourceCompatibility = 1.8
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public' }
+        mavenCentral()
+        maven { url 'http://127.0.0.1:8081/nexus/content/groups/public/' }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${versions.springBoot}")
     }
 }
+apply plugin: 'org.springframework.boot'
 
-repositories {
-    maven { url 'https://maven.aliyun.com/repository/public' }
-    mavenCentral()
-}
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.kafka:spring-kafka'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation "org.springframework.boot:spring-boot-starter-web:${versions.springBoot}"
+    implementation "org.springframework.kafka:spring-kafka:2.6.4"
+
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
-    testImplementation 'org.springframework.kafka:spring-kafka-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test:2.6.4'
 }
 test {
     useJUnitPlatform()
