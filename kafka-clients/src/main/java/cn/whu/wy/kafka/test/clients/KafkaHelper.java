@@ -22,6 +22,17 @@ public class KafkaHelper<K, V> {
 
     private static final String BOOTSTRAP_SERVERS = "127.0.0.1:9092";
 
+    private final KafkaAdminClient adminClient;
+
+    public KafkaAdminClient getAdminClient() {
+        return adminClient;
+    }
+
+    public KafkaHelper() {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", BOOTSTRAP_SERVERS);
+        adminClient = (KafkaAdminClient) AdminClient.create(props);
+    }
 
     public KafkaProducer<K, V> genProducer() {
         Properties props = new Properties();
@@ -44,20 +55,14 @@ public class KafkaHelper<K, V> {
         return new KafkaConsumer<>(props);
     }
 
-    public KafkaAdminClient getKafkaAdmin() {
-        Properties props = new Properties();
-        props.put("bootstrap.servers", BOOTSTRAP_SERVERS);
-        return (KafkaAdminClient) AdminClient.create(props);
-    }
-
     @SneakyThrows
     public Set<String> listTopics() {
-        return getKafkaAdmin().listTopics().names().get(2000, TimeUnit.MILLISECONDS);
+        return adminClient.listTopics().names().get(2000, TimeUnit.MILLISECONDS);
     }
 
     @SneakyThrows
     public TopicDescription describe(String topic) {
-        TopicDescription description = getKafkaAdmin().describeTopics(Collections.singletonList(topic)).all()
+        TopicDescription description = adminClient.describeTopics(Collections.singletonList(topic)).all()
                 .get(2000, TimeUnit.MILLISECONDS).get(topic);
         return description;
     }

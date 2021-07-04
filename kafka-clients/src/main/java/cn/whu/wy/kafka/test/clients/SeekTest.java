@@ -3,8 +3,6 @@ package cn.whu.wy.kafka.test.clients;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.ProducerRecord;
 
 import java.time.Duration;
 import java.util.Collections;
@@ -22,20 +20,26 @@ public class SeekTest {
     public static void main(String[] args) throws ExecutionException, InterruptedException {
 //        if (kafkaHelper.listTopics().contains(TOPIC)) {
 //            System.out.println("delete topic:" + TOPIC);
-//            kafkaHelper.getKafkaAdmin().deleteTopics(Collections.singletonList(TOPIC));
+//            kafkaHelper.getAdminClient().deleteTopics(Collections.singletonList(TOPIC));
 //        }
 //
-        KafkaProducer<String, String> producer = kafkaHelper.genProducer();
+//        KafkaProducer<String, String> producer = kafkaHelper.genProducer();
 //        for (int i = 0; i < 10; i++) {
 //            producer.send(new ProducerRecord<>(TOPIC, "message" + i)).get();
 //        }
 //        System.out.println("send 10 msg");
+//        producer.close();
 
-        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("g_3", "c_1");
+        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("g_2", "c_1");
         consumer.subscribe(Collections.singletonList(TOPIC));
+        consumer.poll(Duration.ofMillis(1000));
+        consumer.seekToBeginning(kafkaHelper.topicPartitions(TOPIC));
         int cnt = 0;
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
+            System.out.println("records.count()=" + records.count());
+            if (records.isEmpty())
+                consumer.seekToBeginning(kafkaHelper.topicPartitions(TOPIC)); //  这个逻辑为什么必须要。否则poll不到消息
             for (ConsumerRecord<String, String> record : records) {
                 System.out.println(record);
                 cnt++;
@@ -46,9 +50,6 @@ public class SeekTest {
         }
 
         System.out.println("consume 10 msg");
-
-        producer.close();
-        consumer.close();
 
         System.out.println(kafkaHelper.describe(TOPIC));
         System.out.println(kafkaHelper.listTopics());
@@ -67,6 +68,8 @@ public class SeekTest {
                 break;
             }
         }
+        System.out.println("done");
+        consumer.close();
 
     }
 }
