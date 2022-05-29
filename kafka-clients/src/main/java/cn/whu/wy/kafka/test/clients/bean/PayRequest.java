@@ -7,9 +7,9 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
- * @Author WangYong
- * @Date 2020/08/27
- * @Time 11:18
+ * @author WangYong
+ * Date 2020/08/27
+ * Time 11:18
  */
 @Data
 @Builder

@@ -3,9 +3,9 @@ package cn.whu.wy.kafka.test.clients;
 import com.google.gson.Gson;
 
 /**
- * @Author WangYong
- * @Date 2021/07/03
- * @Time 20:52
+ * @author WangYong
+ * Date 2021/07/03
+ * Time 20:52
  */
 public class Util {
 

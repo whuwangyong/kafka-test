@@ -14,9 +14,9 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Author WangYong
- * @Date 2021/07/03
- * @Time 20:54
+ * @author WangYong
+ * Date 2021/07/03
+ * Time 20:54
  */
 public class KafkaHelper<K, V> {
 

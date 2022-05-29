@@ -1,26 +1,38 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.aliyun.com/repository/public' }
-        mavenCentral()
-        maven { url 'http://127.0.0.1:8081/nexus/content/groups/public/' }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${versions.springBoot}")
+plugins {
+    id 'org.springframework.boot' version '2.6.7'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'java'
+}
+
+group = 'cn.whu.wy'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+// for lombok
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
     }
 }
-apply plugin: 'org.springframework.boot'
+
+repositories {
+    maven { url 'https://maven.aliyun.com/repository/public/' }
+    mavenCentral()
+}
 
 
 dependencies {
-    implementation "org.springframework.boot:spring-boot-starter-web:${versions.springBoot}"
-    implementation "org.springframework.kafka:spring-kafka:2.6.4"
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+      implementation 'org.springframework.kafka:spring-kafka'
 
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test:${versions.springBoot}") {
-        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-    }
-    testImplementation 'org.springframework.kafka:spring-kafka-test:2.6.4'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 }
-test {
+
+tasks.named('test') {
     useJUnitPlatform()
 }

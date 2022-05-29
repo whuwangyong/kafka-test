@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 
 /**
- * @Author WangYong
- * @Date 2020/08/27
- * @Time 11:03
+ * @author WangYong
+ * Date 2020/08/27
+ * Time 11:03
  */
 
 @Slf4j

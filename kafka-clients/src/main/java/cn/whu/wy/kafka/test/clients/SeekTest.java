@@ -9,9 +9,9 @@ import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 
 /**
- * @Author WangYong
- * @Date 2021/07/03
- * @Time 21:31
+ * @author WangYong
+ * Date 2021/07/03
+ * Time 21:31
  */
 public class SeekTest {
     private static final String TOPIC = "seek-test-topic";
