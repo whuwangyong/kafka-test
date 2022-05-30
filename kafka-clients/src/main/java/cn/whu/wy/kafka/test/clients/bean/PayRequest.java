@@ -1,7 +1,9 @@
 package cn.whu.wy.kafka.test.clients.bean;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,6 +15,8 @@ import java.time.LocalDateTime;
  */
 @Data
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class PayRequest {
     private String orderId;
     private String userId;

@@ -3,6 +3,7 @@ package cn.whu.wy.kafka.test.clients;
 import lombok.SneakyThrows;
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.KafkaAdminClient;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.admin.TopicDescription;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -11,6 +12,7 @@ import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.TopicPartitionInfo;
 
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -84,6 +86,24 @@ public class KafkaHelper<K, V> {
             result.add(new TopicPartition(topic, partitionInfo.partition()));
         }
         return result;
+    }
+
+    public void createTopic(String topic){
+        NewTopic newTopic = new NewTopic(topic, 1, (short) 1);
+        try {
+            adminClient.createTopics(Collections.singleton(newTopic)).all().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createTopic(String topic, int numPartitions){
+        NewTopic newTopic = new NewTopic(topic, numPartitions, (short) 1);
+        try {
+            adminClient.createTopics(Collections.singleton(newTopic)).all().get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
 
