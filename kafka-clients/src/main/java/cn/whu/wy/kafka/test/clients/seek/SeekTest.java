@@ -13,6 +13,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 发现不管是新版还是旧版的poll方法，timeout都必须足够大。
+ * 目前测试，在500ms以内，seek之后立即poll，大概率拉不到消息
+ *
  * @author WangYong
  * Date 2021/07/03
  * Time 21:31
@@ -20,7 +23,10 @@ import java.util.concurrent.TimeUnit;
 public class SeekTest {
     private static final String TOPIC_1 = "seek-test-topic-1";
     private static final String TOPIC_2 = "seek-test-topic-2";
-    static KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>();
+
+    //    private static final long POLL_TIMEOUT = 800;
+    private static final Duration POLL_TIMEOUT = Duration.ofMillis(500);
+    static KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>("192.168.191.128:9092");
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
         if (!kafkaHelper.listTopics().contains(TOPIC_1)) {
@@ -37,21 +43,21 @@ public class SeekTest {
         KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("seek-test_g_2", "c_1");
 
 
-//        fastSeekAndPoll(consumer, TOPIC_1, 0);
-//        fastSeekAndPoll(consumer, TOPIC_1, 1);
-//        fastSeekAndPoll(consumer, TOPIC_2, 0);
-//        fastSeekAndPoll(consumer, TOPIC_2, 1);
-//
-//        seekAndPollInLoop(consumer, TOPIC_1, 0);
-//        seekAndPollInLoop(consumer, TOPIC_1, 1);
-//        seekAndPollInLoop(consumer, TOPIC_2, 0);
-//        seekAndPollInLoop(consumer, TOPIC_2, 1);
+        fastSeekAndPoll(consumer, TOPIC_1, 0);
+        fastSeekAndPoll(consumer, TOPIC_1, 1);
+        fastSeekAndPoll(consumer, TOPIC_2, 0);
+        fastSeekAndPoll(consumer, TOPIC_2, 1);
 
-        CheckAssign checkAssign = new CheckAssign();
-        seekWithRebalanceListener(consumer, checkAssign, TOPIC_1,0);
-        seekWithRebalanceListener(consumer, checkAssign, TOPIC_1,1);
-        seekWithRebalanceListener(consumer, checkAssign, TOPIC_2,0);
-        seekWithRebalanceListener(consumer, checkAssign, TOPIC_2,1);
+        seekAndPollInLoop(consumer, TOPIC_1, 0);
+        seekAndPollInLoop(consumer, TOPIC_1, 1);
+        seekAndPollInLoop(consumer, TOPIC_2, 0);
+        seekAndPollInLoop(consumer, TOPIC_2, 1);
+
+//        CheckAssign checkAssign = new CheckAssign();
+//        seekWithRebalanceListener(consumer, checkAssign, TOPIC_1, 0);
+//        seekWithRebalanceListener(consumer, checkAssign, TOPIC_1, 1);
+//        seekWithRebalanceListener(consumer, checkAssign, TOPIC_2, 0);
+//        seekWithRebalanceListener(consumer, checkAssign, TOPIC_2, 1);
 
 
         System.out.println("done");
@@ -72,7 +78,7 @@ public class SeekTest {
         consumer.assign(Collections.singleton(tp));
         System.out.println("assignment:" + consumer.assignment());
         consumer.seek(tp, 2);
-        System.out.println("count=" + consumer.poll(Duration.ofMillis(100)).count());
+        System.out.println("count=" + consumer.poll(POLL_TIMEOUT).count());
     }
 
     private static void seekAndPollInLoop(KafkaConsumer<String, String> consumer, String topic, int partition) throws InterruptedException {
@@ -83,7 +89,7 @@ public class SeekTest {
 
         int loop = 1;
         while (true) {
-            ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+            ConsumerRecords<String, String> records = consumer.poll(POLL_TIMEOUT);
             if (records.isEmpty()) {
                 loop++;
                 TimeUnit.MILLISECONDS.sleep(10);
@@ -92,7 +98,7 @@ public class SeekTest {
                 break;
             }
 
-            if (loop == 50) {
+            if (loop == 20) {
                 System.out.println("can not get message after loop=" + loop);
                 break;
             }
@@ -118,54 +124,8 @@ public class SeekTest {
         }
         System.out.println("assignment-2:" + consumer.assignment());
         consumer.seek(new TopicPartition(topic, partition), 4);
-        ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+        ConsumerRecords<String, String> records = consumer.poll(POLL_TIMEOUT);
         System.out.println("count=" + records.count());
     }
 
 }
-
-
-
-/*
-the result of use poll(Duration) or use poll(long) is consistent:
-
-[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka startTimeMs: 1653893944366
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-1-0
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 2 for partition seek-test-topic-1-0
-[main] INFO org.apache.kafka.clients.Metadata - [Consumer clientId=c_1, groupId=seek-test_g_1] Cluster ID: exmI-HpwReGMg5anZlbjvw
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-1-1
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 2 for partition seek-test-topic-1-1
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-2-0
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 2 for partition seek-test-topic-2-0
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-2-1
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 2 for partition seek-test-topic-2-1
-assignment:[seek-test-topic-1-0]
-count=3
-assignment:[seek-test-topic-1-1]
-count=0
-assignment:[seek-test-topic-2-0]
-count=0
-assignment:[seek-test-topic-2-1]
-count=0
-
-
-assignment:[seek-test-topic-1-0]
-get message after loop=2
-assignment:[seek-test-topic-1-1]
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-1-0
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 3 for partition seek-test-topic-1-0
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-1-1
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 3 for partition seek-test-topic-1-1
-[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_1] Discovered group coordinator ThinkCentre:9092 (id: 2147483647 rack: null)
-get message after loop=5
-assignment:[seek-test-topic-2-0]
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-2-0
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 3 for partition seek-test-topic-2-0
-get message after loop=5
-assignment:[seek-test-topic-2-1]
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Subscribed to partition(s): seek-test-topic-2-1
-[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_1] Seeking to offset 3 for partition seek-test-topic-2-1
-get message after loop=5
-done
-
- */

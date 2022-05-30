@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class KafkaHelper<K, V> {
 
-    private static final String BOOTSTRAP_SERVERS = "127.0.0.1:9092";
+    private String bootstrapServers;
 
     private final KafkaAdminClient adminClient;
 
@@ -30,15 +30,16 @@ public class KafkaHelper<K, V> {
         return adminClient;
     }
 
-    public KafkaHelper() {
+    public KafkaHelper(String servers) {
+        this.bootstrapServers = servers;
         Properties props = new Properties();
-        props.put("bootstrap.servers", BOOTSTRAP_SERVERS);
+        props.put("bootstrap.servers", servers);
         adminClient = (KafkaAdminClient) AdminClient.create(props);
     }
 
     public KafkaProducer<K, V> genProducer() {
         Properties props = new Properties();
-        props.put("bootstrap.servers", BOOTSTRAP_SERVERS);
+        props.put("bootstrap.servers", bootstrapServers);
         props.put("acks", "all");
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
@@ -47,7 +48,7 @@ public class KafkaHelper<K, V> {
 
     public KafkaConsumer<K, V> genConsumer(String groupId, String clientId) {
         Properties props = new Properties();
-        props.setProperty("bootstrap.servers", BOOTSTRAP_SERVERS);
+        props.setProperty("bootstrap.servers", bootstrapServers);
         props.setProperty("group.id", groupId);
         props.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
         props.setProperty("enable.auto.commit", "true");
@@ -88,7 +89,7 @@ public class KafkaHelper<K, V> {
         return result;
     }
 
-    public void createTopic(String topic){
+    public void createTopic(String topic) {
         NewTopic newTopic = new NewTopic(topic, 1, (short) 1);
         try {
             adminClient.createTopics(Collections.singleton(newTopic)).all().get();
@@ -97,7 +98,7 @@ public class KafkaHelper<K, V> {
         }
     }
 
-    public void createTopic(String topic, int numPartitions){
+    public void createTopic(String topic, int numPartitions) {
         NewTopic newTopic = new NewTopic(topic, numPartitions, (short) 1);
         try {
             adminClient.createTopics(Collections.singleton(newTopic)).all().get();

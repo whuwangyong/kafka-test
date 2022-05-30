@@ -27,7 +27,7 @@ public class PayService {
 
 
 
-    KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>();
+    KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>("127.0.0.1:9092");
 
     /**
      * 处理支付请求

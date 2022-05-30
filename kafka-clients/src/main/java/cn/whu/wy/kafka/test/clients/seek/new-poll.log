@@ -1,0 +1,133 @@
+send 10 msg
+send 10 msg
+...
+...
+[main] INFO org.apache.kafka.common.utils.AppInfoParser - Kafka version: 2.6.0
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-1-0
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 2 for partition seek-test-topic-1-0
+[main] INFO org.apache.kafka.clients.Metadata - [Consumer clientId=c_1, groupId=seek-test_g_2] Cluster ID: WzjEs5o_SZSb3dspnG-IXg
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 2 for partition seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 2 for partition seek-test-topic-2-0
+assignment:[seek-test-topic-1-0]
+count=3
+assignment:[seek-test-topic-1-1]
+count=0
+assignment:[seek-test-topic-2-0]
+count=0
+assignment:[seek-test-topic-2-1]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-2-1
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 2 for partition seek-test-topic-2-1
+count=0
+
+assignment:[seek-test-topic-1-0]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-1-0
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 3 for partition seek-test-topic-1-0
+get message after loop=2
+assignment:[seek-test-topic-1-1]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 3 for partition seek-test-topic-1-1
+get message after loop=5
+assignment:[seek-test-topic-2-0]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 3 for partition seek-test-topic-2-0
+get message after loop=5
+assignment:[seek-test-topic-2-1]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to partition(s): seek-test-topic-2-1
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 3 for partition seek-test-topic-2-1
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Discovered group coordinator ship:9092 (id: 2147483647 rack: null)
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Unsubscribed all topics or patterns and assigned partitions
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to topic(s): seek-test-topic-1
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+get message after loop=5
+
+
+assignment-1:[]
+wait partitions assigned...
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Join group failed with org.apache.kafka.common.errors.MemberIdRequiredException: The group member needs to have a valid member id before actually entering a consumer group.
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Finished assignment for group at generation 1: {c_1-91c7e03f-d5d9-48fe-82c6-0d47c75234d4=Assignment(partitions=[seek-test-topic-1-0, seek-test-topic-1-1])}
+wait partitions assigned...
+onPartitionsAssigned:[seek-test-topic-1-0, seek-test-topic-1-1]
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Successfully joined group with generation 1
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Notifying assignor about the new Assignment(partitions=[seek-test-topic-1-0, seek-test-topic-1-1])
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Adding newly assigned partitions: seek-test-topic-1-0, seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Found no committed offset for partition seek-test-topic-1-0
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Found no committed offset for partition seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=c_1, groupId=seek-test_g_2] Resetting offset for partition seek-test-topic-1-0 to offset 5.
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=c_1, groupId=seek-test_g_2] Resetting offset for partition seek-test-topic-1-1 to offset 5.
+assignment-2:[seek-test-topic-1-0, seek-test-topic-1-1]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 4 for partition seek-test-topic-1-0
+count=0
+onPartitionsRevoked:[seek-test-topic-1-0, seek-test-topic-1-1]
+assignment-1:[]
+wait partitions assigned...
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Revoke previously assigned partitions seek-test-topic-1-0, seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Member c_1-91c7e03f-d5d9-48fe-82c6-0d47c75234d4 sending LeaveGroup request to coordinator ship:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Unsubscribed all topics or patterns and assigned partitions
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to topic(s): seek-test-topic-1
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Join group failed with org.apache.kafka.common.errors.MemberIdRequiredException: The group member needs to have a valid member id before actually entering a consumer group.
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Finished assignment for group at generation 3: {c_1-a5f46ac2-c4cf-45b0-9282-7fb0cb99c1b3=Assignment(partitions=[seek-test-topic-1-0, seek-test-topic-1-1])}
+wait partitions assigned...
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Successfully joined group with generation 3
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Notifying assignor about the new Assignment(partitions=[seek-test-topic-1-0, seek-test-topic-1-1])
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Adding newly assigned partitions: seek-test-topic-1-0, seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Found no committed offset for partition seek-test-topic-1-0
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Found no committed offset for partition seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=c_1, groupId=seek-test_g_2] Resetting offset for partition seek-test-topic-1-0 to offset 5.
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=c_1, groupId=seek-test_g_2] Resetting offset for partition seek-test-topic-1-1 to offset 5.
+onPartitionsAssigned:[seek-test-topic-1-0, seek-test-topic-1-1]
+assignment-2:[seek-test-topic-1-0, seek-test-topic-1-1]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 4 for partition seek-test-topic-1-1
+count=0
+onPartitionsRevoked:[seek-test-topic-1-0, seek-test-topic-1-1]
+assignment-1:[]
+wait partitions assigned...
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Revoke previously assigned partitions seek-test-topic-1-0, seek-test-topic-1-1
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Member c_1-a5f46ac2-c4cf-45b0-9282-7fb0cb99c1b3 sending LeaveGroup request to coordinator ship:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Unsubscribed all topics or patterns and assigned partitions
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to topic(s): seek-test-topic-2
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Join group failed with org.apache.kafka.common.errors.MemberIdRequiredException: The group member needs to have a valid member id before actually entering a consumer group.
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Finished assignment for group at generation 5: {c_1-5e461e5d-9400-4f0e-b642-4c45cb143110=Assignment(partitions=[seek-test-topic-2-0, seek-test-topic-2-1])}
+wait partitions assigned...
+onPartitionsAssigned:[seek-test-topic-2-1, seek-test-topic-2-0]
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Successfully joined group with generation 5
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Notifying assignor about the new Assignment(partitions=[seek-test-topic-2-0, seek-test-topic-2-1])
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Adding newly assigned partitions: seek-test-topic-2-1, seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Found no committed offset for partition seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Setting offset for partition seek-test-topic-2-1 to the committed offset FetchPosition{offset=3, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[ship:9092 (id: 0 rack: null)], epoch=0}}
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=c_1, groupId=seek-test_g_2] Resetting offset for partition seek-test-topic-2-0 to offset 5.
+assignment-2:[seek-test-topic-2-1, seek-test-topic-2-0]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 4 for partition seek-test-topic-2-0
+count=0
+onPartitionsRevoked:[seek-test-topic-2-1, seek-test-topic-2-0]
+assignment-1:[]
+wait partitions assigned...
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Revoke previously assigned partitions seek-test-topic-2-1, seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Member c_1-5e461e5d-9400-4f0e-b642-4c45cb143110 sending LeaveGroup request to coordinator ship:9092 (id: 2147483647 rack: null) due to the consumer unsubscribed from all topics
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Unsubscribed all topics or patterns and assigned partitions
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Subscribed to topic(s): seek-test-topic-2
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Join group failed with org.apache.kafka.common.errors.MemberIdRequiredException: The group member needs to have a valid member id before actually entering a consumer group.
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] (Re-)joining group
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Finished assignment for group at generation 7: {c_1-2e3617dd-5cf0-45f9-bcf6-98886553dd19=Assignment(partitions=[seek-test-topic-2-0, seek-test-topic-2-1])}
+wait partitions assigned...
+onPartitionsAssigned:[seek-test-topic-2-1, seek-test-topic-2-0]
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Successfully joined group with generation 7
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Notifying assignor about the new Assignment(partitions=[seek-test-topic-2-0, seek-test-topic-2-1])
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Adding newly assigned partitions: seek-test-topic-2-1, seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Found no committed offset for partition seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Setting offset for partition seek-test-topic-2-1 to the committed offset FetchPosition{offset=3, offsetEpoch=Optional.empty, currentLeader=LeaderAndEpoch{leader=Optional[ship:9092 (id: 0 rack: null)], epoch=0}}
+[main] INFO org.apache.kafka.clients.consumer.internals.SubscriptionState - [Consumer clientId=c_1, groupId=seek-test_g_2] Resetting offset for partition seek-test-topic-2-0 to offset 5.
+assignment-2:[seek-test-topic-2-1, seek-test-topic-2-0]
+[main] INFO org.apache.kafka.clients.consumer.KafkaConsumer - [Consumer clientId=c_1, groupId=seek-test_g_2] Seeking to offset 4 for partition seek-test-topic-2-1
+count=0
+done
+onPartitionsRevoked:[seek-test-topic-2-1, seek-test-topic-2-0]
+[main] INFO org.apache.kafka.clients.consumer.internals.ConsumerCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Revoke previously assigned partitions seek-test-topic-2-1, seek-test-topic-2-0
+[main] INFO org.apache.kafka.clients.consumer.internals.AbstractCoordinator - [Consumer clientId=c_1, groupId=seek-test_g_2] Member c_1-2e3617dd-5cf0-45f9-bcf6-98886553dd19 sending LeaveGroup request to coordinator ship:9092 (id: 2147483647 rack: null) due to the consumer is being closed

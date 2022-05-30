@@ -24,7 +24,7 @@ import java.util.Collections;
 @Slf4j
 public class OrderService {
 
-    KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>();
+    KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>("127.0.0.1:9092");
 
     public void sendReqToPay() {
         log.info("发送支付请求...");
