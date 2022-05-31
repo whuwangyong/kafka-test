@@ -43,7 +43,7 @@ public class SeekTest {
 //        send(TOPIC_1);
 //        send(TOPIC_2);
 
-        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("seek-test_g_2", "c_1", false);
+        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("c_1", false);
 
 
         fastSeekAndPoll(consumer, TOPIC_1, 0, 0);
