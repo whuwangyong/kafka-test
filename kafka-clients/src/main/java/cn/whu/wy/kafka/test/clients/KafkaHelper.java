@@ -46,12 +46,22 @@ public class KafkaHelper<K, V> {
         return new KafkaProducer<>(props);
     }
 
-    public KafkaConsumer<K, V> genConsumer(String groupId, String clientId) {
+    public KafkaConsumer<K, V> genConsumer(String clientId, boolean autoCommit) {
+        Properties props = new Properties();
+        props.setProperty("bootstrap.servers", bootstrapServers);
+        props.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
+        props.setProperty("enable.auto.commit", String.valueOf(autoCommit));
+        props.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        return new KafkaConsumer<>(props);
+    }
+
+    public KafkaConsumer<K, V> genConsumer(String groupId, String clientId, boolean autoCommit) {
         Properties props = new Properties();
         props.setProperty("bootstrap.servers", bootstrapServers);
         props.setProperty("group.id", groupId);
         props.setProperty(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
-        props.setProperty("enable.auto.commit", "true");
+        props.setProperty("enable.auto.commit", String.valueOf(autoCommit));
         props.setProperty("auto.commit.interval.ms", "1000");
         props.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
         props.setProperty("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");

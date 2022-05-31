@@ -35,7 +35,7 @@ public class PayService {
     public void processPayReq() {
         log.info("等待支付请求...");
 
-        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("g_pay","c_1");
+        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("g_pay","c_1", true);
 
         KafkaProducer<String, String> producer = kafkaHelper.genProducer();
         consumer.subscribe(Arrays.asList(Util.PAY_REQ_TOPIC));

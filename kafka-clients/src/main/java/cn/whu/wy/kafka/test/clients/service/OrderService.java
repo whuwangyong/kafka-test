@@ -45,7 +45,7 @@ public class OrderService {
     public void receive() {
         log.info("等待支付结果...");
 
-        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("g_order","c_1");
+        KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("g_order","c_1", true);
         consumer.subscribe(Collections.singletonList(Util.PAY_RESP_TOPIC));
         while (true) {
             ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
