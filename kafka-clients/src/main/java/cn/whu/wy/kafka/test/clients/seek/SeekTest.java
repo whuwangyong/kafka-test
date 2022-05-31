@@ -1,6 +1,7 @@
 package cn.whu.wy.kafka.test.clients.seek;
 
 import cn.whu.wy.kafka.test.clients.KafkaHelper;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -8,17 +9,13 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 发现不管是新版还是旧版的poll方法，timeout都必须足够大。
- * 目前测试，在500ms以内，seek之后立即poll，大概率拉不到消息。
- * 所以，保险起见，可以将timeout设大一点，比如5s。
- * 但是，目前kafka有个问题，当seek到一个超过endOffset的位置时，poll不会立即返回，而是等待timeout。这一点感觉不是很合理。
- * 因此，要判断一下seek指定的offset是否超过endOffset，如果超过，直接返回。
- *
  * @author WangYong
  * Date 2021/07/03
  * Time 21:31
@@ -28,7 +25,7 @@ public class SeekTest {
     private static final String TOPIC_2 = "seek-test-topic-2";
 
     // private static final long POLL_TIMEOUT = 1000;
-    private static final Duration POLL_TIMEOUT = Duration.ofMillis(500);
+    private static final Duration POLL_TIMEOUT = Duration.ofMillis(100);
     static KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>("127.0.0.1:9092");
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -39,12 +36,21 @@ public class SeekTest {
             kafkaHelper.createTopic(TOPIC_2, 2);
         }
 
-        // send some data
-//        send(TOPIC_1);
-//        send(TOPIC_2);
-
         KafkaConsumer<String, String> consumer = kafkaHelper.genConsumer("c_1", false);
 
+
+//        seekTest(consumer);
+        fastSeekAndPollBenchmark(consumer);
+
+
+        System.out.println("done");
+        consumer.close();
+    }
+
+    static void seekTest(KafkaConsumer<String, String> consumer) throws ExecutionException, InterruptedException {
+        //send some data
+//        send(TOPIC_1, 10);
+//        send(TOPIC_2, 10);
 
         fastSeekAndPoll(consumer, TOPIC_1, 0, 0);
         fastSeekAndPoll(consumer, TOPIC_1, 1, 1);
@@ -61,28 +67,21 @@ public class SeekTest {
 //        seekWithRebalanceListener(consumer, checkAssign, TOPIC_1, 1);
 //        seekWithRebalanceListener(consumer, checkAssign, TOPIC_2, 0);
 //        seekWithRebalanceListener(consumer, checkAssign, TOPIC_2, 1);
-
-
-        System.out.println("done");
-        consumer.close();
     }
 
-    private static void send(String topic) throws InterruptedException, ExecutionException {
+    private static void send(String topic, int num) throws InterruptedException, ExecutionException {
         KafkaProducer<String, String> producer = kafkaHelper.genProducer();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < num; i++) {
             producer.send(new ProducerRecord<>(topic, "message" + i)).get();
         }
-        System.out.println("send 10 msg");
+        System.out.printf("sent %d msg%n", num);
         producer.close();
     }
 
     /**
-     * @param consumer
-     * @param topic
-     * @param partition
-     * @param offset    从该offset开始消费
+     * @param offset 从该offset开始消费
      */
-    private static void fastSeekAndPoll(KafkaConsumer<String, String> consumer, String topic, int partition, long offset) {
+    private static void fastSeekAndPoll(KafkaConsumer<String, String> consumer, String topic, int partition, int offset) {
         TopicPartition tp = new TopicPartition(topic, partition);
         consumer.assign(Collections.singleton(tp));
         System.out.println("assignment:" + consumer.assignment());
@@ -91,7 +90,7 @@ public class SeekTest {
 //        consumer.commitSync(map, Duration.ofSeconds(10));
 //        consumer.enforceRebalance();
 
-        // the offset of the last successfully replicated message plus one
+        // endOffset: the offset of the last successfully replicated message plus one
         // if there has 5 messages, valid offsets are [0,1,2,3,4], endOffset is 4+1=5
         Long endOffset = consumer.endOffsets(Collections.singleton(tp)).get(tp);
         if (offset < 0 || offset >= endOffset) {
@@ -107,6 +106,9 @@ public class SeekTest {
         consumer.assign(Collections.singleton(tp));
         System.out.println("assignment:" + consumer.assignment());
         consumer.seek(tp, 3);
+
+        // this line is important
+        Long endOffset = consumer.endOffsets(Collections.singleton(tp)).get(tp);
 
         int loop = 1;
         while (true) {
@@ -147,6 +149,69 @@ public class SeekTest {
         consumer.seek(new TopicPartition(topic, partition), 4);
         ConsumerRecords<String, String> records = consumer.poll(POLL_TIMEOUT);
         System.out.println("count=" + records.count());
+    }
+
+    /*
+    POLL_TIMEOUT=2000时：
+    invalid:103
+    polled:897
+    notPolled:0
+    total=1000
+    证明有效
+     */
+    private static void fastSeekAndPollBenchmark(KafkaConsumer<String, String> consumer) throws ExecutionException, InterruptedException {
+        int num = 1000;
+//        send(TOPIC_1, num);
+//        send(TOPIC_2, num);
+
+        ArrayList<Integer> offsets1 = new ArrayList<>();
+        ArrayList<Long> offsets2 = new ArrayList<>();
+
+        TopicPartition[] tps = {
+                new TopicPartition(TOPIC_1, 0),
+                new TopicPartition(TOPIC_1, 1),
+                new TopicPartition(TOPIC_2, 0),
+                new TopicPartition(TOPIC_2, 1)
+        };
+
+        // 循环测试1000次
+        Random random = new Random();
+        int invalid = 0;
+        int polled = 0;
+        int notPolled = 0;
+        for (int i = 0; i < 100; i++) {
+            TopicPartition tp = tps[random.nextInt(4)];
+            // 每个分区有10000个消息，这里故意多给出1000的范围，测试超过endOffset的情况
+            int offset = random.nextInt((int) (num / 2 * 1.1));
+            consumer.assign(Collections.singleton(tp));
+            Long endOffset = consumer.endOffsets(Collections.singleton(tp)).get(tp); // 这一行妙不可言啊，能起到更新metadata的作用
+            if (offset >= endOffset) {
+                invalid++;
+            } else {
+                offsets1.add(offset);
+                consumer.seek(tp, offset);
+                ConsumerRecords<String, String> records = consumer.poll(POLL_TIMEOUT);
+                if (records.isEmpty()) {
+                    notPolled++;
+                } else {
+                    ConsumerRecord<String, String> record = records.iterator().next();
+                    offsets2.add(record.offset());
+                    if (record.offset() != offset) {
+                        notPolled++;
+                    } else {
+                        polled++;
+                    }
+                }
+            }
+        }
+
+        System.out.println("invalid:" + invalid);
+        System.out.println("polled:" + polled);
+        System.out.println("notPolled:" + notPolled);
+        System.out.printf("total=%d%n", invalid + polled + notPolled);
+
+        System.out.println(offsets1);
+        System.out.println(offsets2);
     }
 
 }
