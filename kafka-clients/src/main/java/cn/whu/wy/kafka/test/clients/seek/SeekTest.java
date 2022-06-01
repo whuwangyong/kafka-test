@@ -25,7 +25,7 @@ public class SeekTest {
     private static final String TOPIC_2 = "seek-test-topic-2";
 
     // private static final long POLL_TIMEOUT = 1000;
-    private static final Duration POLL_TIMEOUT = Duration.ofMillis(2000);
+    private static final Duration POLL_TIMEOUT = Duration.ofMillis(5000);
     static KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>("127.0.0.1:9092");
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -184,8 +184,9 @@ public class SeekTest {
             // 每个分区有10000个消息，这里故意多给出1000的范围，测试超过endOffset的情况
             int offset = random.nextInt((int) (num / 2 * 1.1));
             consumer.assign(Collections.singleton(tp));
+            Long beginOffset = consumer.beginningOffsets(Collections.singleton(tp)).get(tp);
             Long endOffset = consumer.endOffsets(Collections.singleton(tp)).get(tp); // 这一行妙不可言啊，能起到更新metadata的作用
-            if (offset >= endOffset) {
+            if (offset < beginOffset || offset >= endOffset) {
                 invalid++;
             } else {
                 offsets1.add(offset);
