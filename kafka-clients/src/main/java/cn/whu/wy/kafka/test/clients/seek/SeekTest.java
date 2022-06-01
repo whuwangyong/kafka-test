@@ -25,7 +25,7 @@ public class SeekTest {
     private static final String TOPIC_2 = "seek-test-topic-2";
 
     // private static final long POLL_TIMEOUT = 1000;
-    private static final Duration POLL_TIMEOUT = Duration.ofMillis(100);
+    private static final Duration POLL_TIMEOUT = Duration.ofMillis(2000);
     static KafkaHelper<String, String> kafkaHelper = new KafkaHelper<>("127.0.0.1:9092");
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
@@ -160,9 +160,9 @@ public class SeekTest {
     证明有效
      */
     private static void fastSeekAndPollBenchmark(KafkaConsumer<String, String> consumer) throws ExecutionException, InterruptedException {
-        int num = 1000;
-//        send(TOPIC_1, num);
-//        send(TOPIC_2, num);
+        int num = 2000;
+        send(TOPIC_1, num);
+        send(TOPIC_2, num);
 
         ArrayList<Integer> offsets1 = new ArrayList<>();
         ArrayList<Long> offsets2 = new ArrayList<>();
